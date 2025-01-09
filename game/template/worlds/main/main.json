@@ -1,0 +1,8 @@
+{
+    "name": "default",
+    "bg_color": "default",
+    "type": "gui-menu",
+    "feats": [
+        "bg/bg.json"
+    ]
+}

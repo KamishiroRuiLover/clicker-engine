@@ -1,0 +1,8 @@
+{
+    "name": "Template Game",
+    "author": "Kamishiro Rui",
+    "version": "0.0.1",
+    "title-mode": "author-version",
+    "icon": "sprites/icon.png",
+    "func_files": ["functions/default.py"]
+}
