@@ -3,6 +3,7 @@
     "bg_color": "default",
     "type": "gui-menu",
     "feats": [
-        "bg/bg.json"
+        "bg/bg.json",
+        "buttons/exit.json"
     ]
 }

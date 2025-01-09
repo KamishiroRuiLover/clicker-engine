@@ -12,7 +12,7 @@ GAME = "game/" + sys.argv[1]
 
 # Pygame initialization #
 pg.init()
-screen = pg.display.set_mode((1280, 720))
+screen = pg.display.set_mode(pg.display.get_desktop_sizes()[0]) # 1280 x 720 default size
 clock = pg.time.Clock()
 running = True
 dt = 0
@@ -20,11 +20,46 @@ dt = 0
 
 # Misc globals #
 bg_color = pg.Color(0, 0, 0)
+game_bg_color = pg.Color(0, 0, 0)
+active_world = "none"
+active_feats = {}
+loaded_feats = []
+pre_print_screen = pg.Surface((1280, 720))
+funcs = {}
+
+
+# Classes #
+class World_Obj():
+    def __init__(self, x, y, img, type, func):
+        self.t = type
+        self.f = func
+        self.image = img
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        self.clicked = False
+    
+    def draw(self, type, func):
+
+        if type == "button":
+            pos = pg.mouse.get_pos()
+            pos = ((pos[0] / 1280) * screen.get_rect().size[0], (pos[1] / 720) * screen.get_rect().size[1])
+
+            if self.rect.collidepoint(pos):
+                print("yes")
+                if pg.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                    print("yes")
+                    self.clicked = True
+            
+            if pg.mouse.get_pressed()[0] == 0:
+                self.clicked = False
+
+        pre_print_screen.blit(i.image, (i.rect.x, i.rect.y))
 
 
 # Loading files #
-execs = []
 def read_core(game):
+    global funcs
+
     file = open(game + "/core.json").read()
     j_dict = json.loads(file)
 
@@ -33,21 +68,85 @@ def read_core(game):
     icon = pg.image.load(game + "/" + j_dict["icon"])
     pg.display.set_icon(icon)
 
-    for i in j_dict["func_files"]:
-        file = open(game + "/" + i).read()
-        exec(file, globals())
-        # execs.append(file)
+    code = open(game + "/" + j_dict["func_file"] + ".py").read()
+    tags = json.loads(open(game + "/" + j_dict["func_file"] + ".json").read())["funcs"]
+    exec(code, globals())
+    for i in tags:
+        funcs[i] = globals().get(i)
+
+    print(funcs)
+
+    game_bg_color.r = j_dict["global_bg_color"][0]
+    game_bg_color.g = j_dict["global_bg_color"][1]
+    game_bg_color.b = j_dict["global_bg_color"][2]
 
 read_core(GAME)
 
-globals
+
+def read_world(game, world):
+    global active_feats
+    active_feats = {}
+    global active_world
+    active_world = world
+    global bg_color
+
+    path = game + "/worlds/" + world + "/"
+    file = open(path + world + ".json").read()
+    j_dict = json.loads(file)
+
+    if j_dict["bg_color"] == "default":
+        bg_color = game_bg_color
+    else:
+        bg_color.r = j_dict["bg_color"][0]
+        bg_color.g = j_dict["bg_color"][1]
+        bg_color.b = j_dict["bg_color"][2]
+    
+    for i in j_dict["feats"]:
+        n_feat = {}
+
+        file = open(path + "feat/" + i).read()
+        feat_dict = json.loads(file)
+
+        n_feat["sprite"] = pg.image.load(game + "/sprites/" + feat_dict["sprite"])
+        n_feat["type"] = feat_dict["type"]
+        n_feat["func"] = feat_dict["func"]
+        n_feat["location"] = feat_dict["location"]
+
+        active_feats[feat_dict["name"]] = n_feat
+
+
+read_world(GAME, "main")
+
+
+def load_active_feats():
+    global loaded_feats
+    loaded_feats = []
+
+    for i in active_feats:
+        feat = active_feats[i]
+        n_feat = World_Obj(feat["location"][0], feat["location"][1], feat["sprite"], feat["type"], feat["func"])
+
+        loaded_feats.append(n_feat)
+
+load_active_feats()
+
+
+# pg.display.toggle_fullscreen()
 
 
 while(running):
 
+    pre_print_screen.fill(bg_color)
+
+    for i in loaded_feats:
+        i.draw(i.t, i.f)
+
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+    
+    screen.blit(pg.transform.scale(pre_print_screen, screen.get_rect().size), (0, 0))
+    pg.display.update()
 
 
 pg.quit()

@@ -1,3 +1,3 @@
 {
-    "funcs": "test"
+    "funcs": ["none", "test"]
 }

@@ -22,6 +22,10 @@ def read_saves_dir(game):
     return saves
 
 
+def none():
+    pass
+
+
 def test():
     print("test")
 

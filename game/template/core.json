@@ -4,5 +4,6 @@
     "version": "0.0.1",
     "title-mode": "author-version",
     "icon": "sprites/icon.png",
-    "func_files": ["functions/default.py"]
+    "func_file": "functions/default",
+    "global_bg_color": [255, 0, 0]
 }
