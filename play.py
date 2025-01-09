@@ -10,4 +10,10 @@ dt = 0
 
 
 while(running):
-    pg.exit()
+    
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            running = False
+
+
+pg.quit()
