@@ -3,5 +3,7 @@
     "sprite": "gui/buttons/exit.png",
     "type": "button",
     "location": [640, 251],
-    "func": "test"
+    "func": "exit",
+    "param": "",
+    "req": "NONE"
 }

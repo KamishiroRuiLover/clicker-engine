@@ -26,28 +26,30 @@ active_feats = {}
 loaded_feats = []
 pre_print_screen = pg.Surface((1280, 720))
 funcs = {}
+gbls = json.loads(open(GAME + "/variables/globals.json").read())
+stages = ["NONE"]
 
 
 # Classes #
 class World_Obj():
-    def __init__(self, x, y, img, type, func):
+    def __init__(self, x, y, img, type, func, param):
         self.t = type
         self.f = func
+        self.p = param
         self.image = img
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.clicked = False
     
-    def draw(self, type, func):
+    def draw(self):
 
-        if type == "button":
+        if self.t == "button":
             pos = pg.mouse.get_pos()
-            pos = ((pos[0] / 1280) * screen.get_rect().size[0], (pos[1] / 720) * screen.get_rect().size[1])
+            pos = ((pos[0] / screen.get_rect().size[0]) * 1280, (pos[1] / screen.get_rect().size[1]) * 720)
 
             if self.rect.collidepoint(pos):
-                print("yes")
                 if pg.mouse.get_pressed()[0] == 1 and self.clicked == False:
-                    print("yes")
+                    funcs[self.f](self.p)
                     self.clicked = True
             
             if pg.mouse.get_pressed()[0] == 0:
@@ -83,6 +85,16 @@ def read_core(game):
 read_core(GAME)
 
 
+def feat_param(param):
+    if param == "GAME":
+        param = GAME
+    return param
+
+
+def feat_req(req):
+    return req
+
+
 def read_world(game, world):
     global active_feats
     active_feats = {}
@@ -108,9 +120,11 @@ def read_world(game, world):
         feat_dict = json.loads(file)
 
         n_feat["sprite"] = pg.image.load(game + "/sprites/" + feat_dict["sprite"])
+        n_feat["location"] = feat_dict["location"]
         n_feat["type"] = feat_dict["type"]
         n_feat["func"] = feat_dict["func"]
-        n_feat["location"] = feat_dict["location"]
+        n_feat["param"] = feat_param(feat_dict["param"])
+        n_feat["req"] = feat_req(feat_dict["req"])
 
         active_feats[feat_dict["name"]] = n_feat
 
@@ -124,9 +138,11 @@ def load_active_feats():
 
     for i in active_feats:
         feat = active_feats[i]
-        n_feat = World_Obj(feat["location"][0], feat["location"][1], feat["sprite"], feat["type"], feat["func"])
 
-        loaded_feats.append(n_feat)
+        if feat["req"] in stages:
+            n_feat = World_Obj(feat["location"][0], feat["location"][1], feat["sprite"], feat["type"], feat["func"], feat["param"])
+
+            loaded_feats.append(n_feat)
 
 load_active_feats()
 
@@ -134,12 +150,19 @@ load_active_feats()
 # pg.display.toggle_fullscreen()
 
 
+# Post-launch Data Funcs #
+def save():
+    sfile = open("saves/" + sys.argv[1] + ".save", "w")
+    sfile.write(json.dumps(gbls))
+save_func = save
+
+
 while(running):
 
     pre_print_screen.fill(bg_color)
 
     for i in loaded_feats:
-        i.draw(i.t, i.f)
+        i.draw()
 
     for event in pg.event.get():
         if event.type == pg.QUIT:

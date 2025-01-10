@@ -1,3 +1,9 @@
 {
-    "funcs": ["none", "test"]
+    "funcs": [
+        "none", 
+        "exit",
+        "add_stage",
+        "inc_global_by_global",
+        "purchase_stage"
+    ]
 }
