@@ -4,6 +4,10 @@
         "exit",
         "add_stage",
         "inc_global_by_global",
-        "purchase_stage"
+        "purchase_stage",
+        "switch_world",
+        "purchase_global_inc",
+        "set_global",
+        "set_local"
     ]
 }

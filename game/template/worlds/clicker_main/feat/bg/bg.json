@@ -1,0 +1,9 @@
+{
+    "name": "clicker_bg",
+    "sprite": "gui/bg/clicker_bg.png",
+    "type": "sprite",
+    "location": [0, 0],
+    "func": "none",
+    "param": "",
+    "req": "NONE"
+}

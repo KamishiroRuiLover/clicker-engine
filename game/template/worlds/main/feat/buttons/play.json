@@ -1,0 +1,9 @@
+{
+    "name": "play_button",
+    "sprite": "gui/buttons/play.png",
+    "type": "button",
+    "location": [523, 360],
+    "func": "switch_world",
+    "param": ["GAME", "clicker_main"],
+    "req": "NONE"
+}

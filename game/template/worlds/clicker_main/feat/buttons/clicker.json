@@ -1,0 +1,9 @@
+{
+    "name": "clicker",
+    "sprite": "gui/buttons/clicker.png",
+    "type": "button",
+    "location": [490, 210],
+    "func": "inc_global_by_global",
+    "param": ["money", "money_add"],
+    "req": "NONE"
+}

@@ -4,8 +4,7 @@
     "type": "gui-menu",
     "feats": [
         "bg/bg.json",
-        "buttons/exit.json",
-        "buttons/play.json"
+        "buttons/clicker.json"
     ],
     "locals": {
     }

@@ -27,6 +27,7 @@ loaded_feats = []
 pre_print_screen = pg.Surface((1280, 720))
 funcs = {}
 gbls = json.loads(open(GAME + "/variables/globals.json").read())
+lcls = {}
 stages = ["NONE"]
 
 
@@ -76,8 +77,6 @@ def read_core(game):
     for i in tags:
         funcs[i] = globals().get(i)
 
-    print(funcs)
-
     game_bg_color.r = j_dict["global_bg_color"][0]
     game_bg_color.g = j_dict["global_bg_color"][1]
     game_bg_color.b = j_dict["global_bg_color"][2]
@@ -86,13 +85,31 @@ read_core(GAME)
 
 
 def feat_param(param):
-    if param == "GAME":
-        param = GAME
+    if type(param) == type([]):
+        for i in range(len(param)):
+            if param[i] == "GAME":
+                param[i] = GAME
+    else:
+        if param == "GAME":
+            param = GAME
     return param
 
 
 def feat_req(req):
     return req
+
+
+def load_active_feats():
+    global loaded_feats
+    loaded_feats = []
+
+    for i in active_feats:
+        feat = active_feats[i]
+
+        if feat["req"] in stages:
+            n_feat = World_Obj(feat["location"][0], feat["location"][1], feat["sprite"], feat["type"], feat["func"], feat["param"])
+
+            loaded_feats.append(n_feat)
 
 
 def read_world(game, world):
@@ -105,6 +122,9 @@ def read_world(game, world):
     path = game + "/worlds/" + world + "/"
     file = open(path + world + ".json").read()
     j_dict = json.loads(file)
+
+    if j_dict["name"] != "default":
+        pg.display.set_caption(j_dict["name"])
 
     if j_dict["bg_color"] == "default":
         bg_color = game_bg_color
@@ -127,24 +147,12 @@ def read_world(game, world):
         n_feat["req"] = feat_req(feat_dict["req"])
 
         active_feats[feat_dict["name"]] = n_feat
+    
+    load_active_feats()
+read_world_func = read_world
 
 
 read_world(GAME, "main")
-
-
-def load_active_feats():
-    global loaded_feats
-    loaded_feats = []
-
-    for i in active_feats:
-        feat = active_feats[i]
-
-        if feat["req"] in stages:
-            n_feat = World_Obj(feat["location"][0], feat["location"][1], feat["sprite"], feat["type"], feat["func"], feat["param"])
-
-            loaded_feats.append(n_feat)
-
-load_active_feats()
 
 
 # pg.display.toggle_fullscreen()
@@ -170,6 +178,8 @@ while(running):
     
     screen.blit(pg.transform.scale(pre_print_screen, screen.get_rect().size), (0, 0))
     pg.display.update()
+
+    clock.tick(30)
 
 
 pg.quit()
