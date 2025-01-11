@@ -7,5 +7,12 @@
         "buttons/clicker.json"
     ],
     "locals": {
-    }
+    },
+    "keybinds": [
+        {
+            "key": "K_ESCAPE",
+            "func": "exit",
+            "param": ""
+        }
+    ]
 }

@@ -30,6 +30,7 @@ funcs = {}
 gbls = json.loads(open(GAME + "/variables/globals.json").read())
 lcls = {}
 stages = ["NONE"]
+keybinds = { "a":"b" }
 
 
 # Classes #
@@ -119,6 +120,8 @@ def read_world(game, world):
     global active_world
     active_world = world
     global bg_color
+    global keybinds
+    keybinds = {}
 
     path = game + "/worlds/" + world + "/"
     file = open(path + world + ".json").read()
@@ -149,6 +152,14 @@ def read_world(game, world):
 
         active_feats[feat_dict["name"]] = n_feat
     
+    for i in j_dict["keybinds"]:
+        temp = getattr(pg, i["key"], "NONE")
+        if temp != "NONE":
+            keybinds[temp] = {
+                "func": i["func"],
+                "param": i["param"]
+            }
+
     load_active_feats()
 read_world_func = read_world
 
@@ -198,6 +209,9 @@ while(running):
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+        if pg.event.event_name(event.type) == "KeyDown":
+            if event.key in keybinds:
+                funcs[keybinds[event.key]["func"]](keybinds[event.key]["param"])
     
     screen.blit(pg.transform.scale(pre_print_screen, screen.get_rect().size), (0, 0))
     pg.display.update()
