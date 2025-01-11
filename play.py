@@ -1,6 +1,7 @@
 import pygame as pg
 import sys
 import json
+from os import path
 
 
 # arguments #
@@ -160,9 +161,31 @@ read_world(GAME, "main")
 
 # Post-launch Data Funcs #
 def save():
-    sfile = open("saves/" + sys.argv[1] + ".save", "w")
-    sfile.write(json.dumps(gbls))
+    scontent = {
+        "gbls": gbls,
+        "lcls": lcls,
+        "stages": stages,
+        "open_world": active_world
+    }
+    sfile = open("saves/" + sys.argv[1] + ".save", "x")
+    sfile.write(json.dumps(scontent))
 save_func = save
+
+
+def load():
+    if path.exists("saves/" + sys.argv[1] + ".save"):
+        sfile = open("saves/" + sys.argv[1] + ".save")
+        scontent = json.loads(sfile.read())
+
+        global gbls
+        global lcls
+        global stages
+
+        gbls = scontent["gbls"],
+        lcls = scontent["lcls"],
+        stages = scontent["stages"],
+        read_world(GAME, scontent["open_world"])
+load_func = load
 
 
 while(running):

@@ -53,6 +53,20 @@ def switch_world(param):
     read_world_func(param[0], param[1])
 
 
+def make_save(param):
+    #param "" (no parameters, just empty string)
+    global save_func
+
+    save_func()
+
+
+def load_save(param):
+    #param "" (no parameters, just empty string)
+    global load_func
+
+    load_func()
+
+
 # template/clicker project specific funcs #
 def inc_global_by_global(param):
     #param ["var_name", "var2_name"] #Slot 1 must be the variable you want to change, changed by the variable listed in slot 2. Both must be globals.

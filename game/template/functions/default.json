@@ -8,6 +8,8 @@
         "switch_world",
         "purchase_global_inc",
         "set_global",
-        "set_local"
+        "set_local",
+        "make_save",
+        "load_save"
     ]
 }

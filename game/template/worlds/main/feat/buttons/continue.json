@@ -1,0 +1,9 @@
+{
+    "name": "continue_button",
+    "sprite": "gui/buttons/continue.png",
+    "type": "button",
+    "location": [523, 479],
+    "func": "load_save",
+    "param": "",
+    "req": "NONE"
+}
