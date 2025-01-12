@@ -5,5 +5,6 @@
     "location": [523, 588],
     "func": "exit",
     "param": "",
-    "req": "NONE"
+    "req": "NONE",
+    "idle_anim": "NONE"
 }

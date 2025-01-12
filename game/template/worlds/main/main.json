@@ -5,7 +5,8 @@
     "feats": [
         "bg/bg.json",
         "buttons/exit.json",
-        "buttons/play.json"
+        "buttons/play.json",
+        "buttons/continue.json"
     ],
     "locals": {
     },

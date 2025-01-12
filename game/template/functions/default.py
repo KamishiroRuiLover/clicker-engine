@@ -5,6 +5,7 @@ import json
 # engine funcs #
 def read_saves_dir(param):
     # as of now unused, may be used in the future
+    #param "GAME" (Must literally be the string "GAME", not something else)
 
     saves = {
         "slot1": {
@@ -67,6 +68,20 @@ def load_save(param):
     load_func()
 
 
+def set_global(param):
+    #param ["var_name", new_value(any value)]
+    global gbls
+
+    gbls[param[0]] = param[1]
+
+
+def set_local(param):
+    #param ["local_var_name", new_value(any value)]
+    global lcls
+
+    lcls[param[0]] = param[1]
+
+
 # template/clicker project specific funcs #
 def inc_global_by_global(param):
     #param ["var_name", "var2_name"] #Slot 1 must be the variable you want to change, changed by the variable listed in slot 2. Both must be globals.
@@ -93,20 +108,6 @@ def purchase_global_inc(param):
         gbls[param[0]] += param[1]
 
         gbls[param[2]] -= param[3]
-
-
-def set_global(param):
-    #param ["var_name", new_value(any value)]
-    global gbls
-
-    gbls[param[0]] = param[1]
-
-
-def set_local(param):
-    #param ["local_var_name", new_value(any value)]
-    global lcls
-
-    lcls[param[0]] = param[1]
 
 
 # end of file #

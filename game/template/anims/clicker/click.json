@@ -1,0 +1,16 @@
+{
+    "rot_points": [
+    ],
+    "scale_points": [
+        {
+            "frames": 15,
+            "scale": [225, 225]
+        },
+        {
+            "frames": 30,
+            "scale": [300, 300]
+        }
+    ],
+    "re": false,
+    "length": 30
+}

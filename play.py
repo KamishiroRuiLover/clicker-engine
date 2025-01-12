@@ -11,6 +11,19 @@ if len(sys.argv) != 2:
 GAME = "game/" + sys.argv[1]
 
 
+# math funcs #
+def lerp_1d(start, end, in_between):
+    end -= start
+
+    return (end * in_between) + start
+
+
+def set_rot(img, rot):
+    print(rot - img.rot, rot, img.rot)
+    img.image = pg.transform.rotate(img.image, rot - img.rot)
+    img.rot = rot
+
+
 # Pygame initialization #
 pg.init()
 screen = pg.display.set_mode(pg.display.get_desktop_sizes()[0]) # 1280 x 720 default size
@@ -30,35 +43,67 @@ funcs = {}
 gbls = json.loads(open(GAME + "/variables/globals.json").read())
 lcls = {}
 stages = ["NONE"]
-keybinds = { "a":"b" }
+keybinds = {}
+frame = 0
 
 
 # Classes #
 class World_Obj():
-    def __init__(self, x, y, img, type, func, param):
-        self.t = type
-        self.f = func
-        self.p = param
+    def __init__(self, x, y, img, type, func, param, idle):
+        self.type = type
+        self.func = func
+        self.param = param
+        self.idle_anim = idle
         self.image = img
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.clicked = False
+        if idle != "NONE":
+            self.anims = [
+                {
+                    "anim": idle,
+                    "frame": frame,
+                    "length": idle["length"]
+                }
+            ]
+        else:
+            self.anims = ["NONE"]
+        self.rot = 0
     
     def draw(self):
 
-        if self.t == "button":
+        for i in self.anims:
+            if i != "NONE":
+                if frame - i["frame"] > i["length"]:
+                    if i["anim"]["re"] == False:
+                        self.anims.remove(i)
+                t_frame = (frame - i["frame"]) - int(((frame - i["frame"]) / i["length"])) * i["length"]
+                t_past = 0
+                for j in i["anim"]["rot_points"]:
+                    if t_frame <= j["frames"]:
+                        print(lerp_1d(t_past, j["rot"], t_frame/j["frames"]))
+                        set_rot(self, lerp_1d(t_past, j["rot"], t_frame/j["frames"]))
+                        break
+                    else:
+                        t_past = j["rot"]
+            else:
+                self.anims.remove(i)
+
+
+        if self.type == "button":
             pos = pg.mouse.get_pos()
             pos = ((pos[0] / screen.get_rect().size[0]) * 1280, (pos[1] / screen.get_rect().size[1]) * 720)
 
             if self.rect.collidepoint(pos):
                 if pg.mouse.get_pressed()[0] == 1 and self.clicked == False:
-                    funcs[self.f](self.p)
+                    funcs[self.func](self.param)
                     self.clicked = True
             
             if pg.mouse.get_pressed()[0] == 0:
                 self.clicked = False
 
-        pre_print_screen.blit(i.image, (i.rect.x, i.rect.y))
+        pg.transform.rotate(self.image, 90)
+        pre_print_screen.blit(self.image, (self.rect.x, self.rect.y))
 
 
 # Loading files #
@@ -109,7 +154,7 @@ def load_active_feats():
         feat = active_feats[i]
 
         if feat["req"] in stages:
-            n_feat = World_Obj(feat["location"][0], feat["location"][1], feat["sprite"], feat["type"], feat["func"], feat["param"])
+            n_feat = World_Obj(feat["location"][0], feat["location"][1], feat["sprite"], feat["type"], feat["func"], feat["param"], feat["idle_anim"])
 
             loaded_feats.append(n_feat)
 
@@ -149,6 +194,10 @@ def read_world(game, world):
         n_feat["func"] = feat_dict["func"]
         n_feat["param"] = feat_param(feat_dict["param"])
         n_feat["req"] = feat_req(feat_dict["req"])
+        if feat_dict["idle_anim"] == "NONE":
+            n_feat["idle_anim"] = "NONE"
+        else:
+            n_feat["idle_anim"] = json.loads(open(GAME + "/anims/" + feat_dict["idle_anim"]).read())
 
         active_feats[feat_dict["name"]] = n_feat
     
@@ -217,6 +266,7 @@ while(running):
     pg.display.update()
 
     clock.tick(30)
+    frame += 1
 
 
 pg.quit()

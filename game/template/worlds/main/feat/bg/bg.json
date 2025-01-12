@@ -5,5 +5,6 @@
     "location": [0, 0],
     "func": "none",
     "param": "",
-    "req": "NONE"
+    "req": "NONE",
+    "idle_anim": "NONE"
 }

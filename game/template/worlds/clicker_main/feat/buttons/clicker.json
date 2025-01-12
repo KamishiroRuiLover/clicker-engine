@@ -5,5 +5,6 @@
     "location": [490, 210],
     "func": "inc_global_by_global",
     "param": ["money", "money_add"],
-    "req": "NONE"
+    "req": "NONE",
+    "idle_anim": "clicker/idle.json"
 }
