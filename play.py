@@ -56,7 +56,7 @@ class World_Obj():
         self.idle_anim = idle
         self.image = img
         self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect.center = (x, y)
         self.clicked = False
         if idle != "NONE":
             self.anims = [

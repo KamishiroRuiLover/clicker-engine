@@ -2,7 +2,7 @@
     "name": "exit_button",
     "sprite": "gui/buttons/exit.png",
     "type": "button",
-    "location": [523, 588],
+    "location": [640, 588],
     "func": "exit",
     "param": "",
     "req": "NONE",
